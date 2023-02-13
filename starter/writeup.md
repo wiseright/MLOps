@@ -1,4 +1,4 @@
-# STEP 1: 
+# STEP 1: TRAINING AND DEPLOYMENT ON SAGAMAKER 
 <strong>a. INITIAL SETUP</strong><br>
 In this step I created the notebook instance. I chose ml.t3.medium because I thought it is a good tradeoff between speed and cost.<br>
 Then I uploaded training_and_deploy-solution.ipynb and hpo.py files into notebook instance
@@ -30,3 +30,17 @@ The name of deployed model is: pytorch-inference-2023-02-11-13-10-12-631
 
 > Model Deploy (Completed):<br>
 ![Model Deploy Completed](screenshot/08_step_1_Deploy_Completed.png "Model Deploy Completed")
+
+<strong>d. MULTI-INSTANCE TRAINING</strong><br>
+
+Link: 
+* https://sagemaker.readthedocs.io/en/stable/api/training/smd_model_parallel_general.html
+* https://docs.aws.amazon.com/sagemaker/latest/dg/distributed-training.html
+* https://github.com/aws/amazon-sagemaker-examples/blob/main/training/distributed_training/pytorch/data_parallel/mnist/pytorch_smdataparallel_mnist_demo.ipynb
+* https://sagemaker.readthedocs.io/en/stable/frameworks/pytorch/sagemaker.pytorch.html
+
+I changed the estimator definition with the following 2 changes:
+1. instance_count = 2 instead if instance_count = 1
+2. added the parameter: distribution={"smdistributed": {"dataparallel": {"enabled": True}}}
+
+# STEP 2: EC2 TRAINING
