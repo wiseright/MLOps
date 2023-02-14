@@ -46,7 +46,8 @@ I changed the estimator definition with the following 2 changes:
 # STEP 2: EC2 TRAINING
 
 <strong>a. EC2 SETUP</strong><br>
-I choose no AMI but used Amazon instance ml.t3.large.
+I choose no AMI but used Amazon instance ml.t3.large. At first glance I tried with a ml.t2.micro instance but it seems too slow to train.
+So I chose a ml.t3.large since I though it is the best tradeoff between cost and performance.
 Then I create a virtual environment with the following commands:
 > * python3 -m venv env
 > * source env/bin/source
@@ -60,4 +61,16 @@ I also analyzed the code in the file ec2train.py and following I wrote up the di
 2. The function create_data_loaders works with already downloaded image folders, while the hpo.py leverage the data from S3 bucket downloaded from container.
 3. I can conclude that the changes are minimal to adapt hpo.py to EC2 training.
 
-
+# STEP 3: LAMBDA FUNCTION
+<strong>a. SETTING UP A LAMBDA FUNCTION</strong><br>
+I analyzed the content of the lambda function code. I can see the following main section:
+1. boto3.Session().client() object that is used to invoke the endpoint with the method invoke_endpoint().
+2. The method invoke_endpoint needs to pass (beyond other stuffs) the Body content. It is retrieved by the event variable.
+3. The event variable contains a json with key = 'url' and value = '<S3 link of the image to do inference>'
+4. The invoke_endpoint method returns the result of inference; it's a JSON file, so I need to extract the value of Body key and then decode it from utf-8
+5. Finally, the lambda function return a JSON object with the following key:value pairs:
+   * statusCode: 200, to show correct execution
+   * headers: the type of content
+   * type-result: the result of inference
+   * Content-Type-In: the context previous passed to the lambda
+   * body: the result of inference dumped into a JSON object
