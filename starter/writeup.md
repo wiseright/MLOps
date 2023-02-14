@@ -44,3 +44,20 @@ I changed the estimator definition with the following 2 changes:
 2. added the parameter: distribution={"smdistributed": {"dataparallel": {"enabled": True}}}
 
 # STEP 2: EC2 TRAINING
+
+<strong>a. EC2 SETUP</strong><br>
+I choose no AMI but used Amazon instance ml.t3.large.
+Then I create a virtual environment with the following commands:
+> * python3 -m venv env
+> * source env/bin/source
+> * pip install .....all dependencies (e.g. torch, numpy, tqdm, pandas)
+
+Then, I trained the model and saved it into TrainedModels folder: 
+![trained model onto EC2](screenshot/09_step_2_EC2_Training.png "trained model onto EC2")
+
+I also analyzed the code in the file ec2train.py and following I wrote up the differences:
+1. No arguments are passed through argparse python library; that's why I launched the script directly and not from PyTorch estimator.
+2. The function create_data_loaders works with already downloaded image folders, while the hpo.py leverage the data from S3 bucket downloaded from container.
+3. I can conclude that the changes are minimal to adapt hpo.py to EC2 training.
+
+
