@@ -129,3 +129,19 @@ According my IAM console, there are 3 policies attached to the Lambda Role:
 * AmazonSageMakerFullAccess
 
 ![Attach SageMakerFullAccess role](./screenshot/11_step_4_Setting_Role_2.png)
+
+# STEP 5: CONCURRENCY AND AUTOSCALING
+<strong>a. CONCURRENCY</strong><br>
+There are 2 types of concurrency I could set up:
+* reserved, in this case I know in advance the maximum number of parallel requirements to the lambda
+* provisioned, in this case I don't know in advance this information
+
+I use the former because I suppose to know in advance that the maximum endpoint number should be 2
+
+<strong>b. AUTO-SCALING</strong><br>
+To configure the endpoint auto-scaling features, I set up the following features:
+* max instance count
+* scale-in cool down time period (30 seconds)
+* scale-out cool down time period (30 seconds)
+
+![Lambda Reserved Concurrency](./screenshot/13_step_5_Reserved_concurrency.png)
